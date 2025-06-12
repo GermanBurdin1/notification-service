@@ -35,4 +35,23 @@ export class NotificationsConsumer {
 		}
 	}
 
+	@RabbitSubscribe({
+		exchange: 'lesson_exchange',
+		routingKey: 'lesson_response',
+		queue: 'notifications',
+	})
+	async handleLessonResponse(data: any) {
+		console.log('📩 [notifications] Получен ответ по уроку:', data);
+		await this.service.create({
+			recipient_id: data.user_id,
+			sender_id: data.metadata?.teacherId ?? null,
+			type: data.type,
+			title: data.title,
+			message: data.message,
+			data: data.metadata,
+			status: data.status,
+		});
+	}
+
+
 }
