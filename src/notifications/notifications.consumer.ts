@@ -14,7 +14,6 @@ export class NotificationsConsumer {
 		queue: 'notifications',
 	})
 	async handleLessonCreated(data: any) {
-		console.log("wfkmgwmflgkwjmdlfgkjwdmlfgkjwdmlfgkwmlgfj")
 		console.log('🔥 handleLessonCreated вызван:', data);
 		console.log('🧪 this.service:', this.service);
 		console.log('🧪 typeof this.service.create:', typeof this.service?.create);

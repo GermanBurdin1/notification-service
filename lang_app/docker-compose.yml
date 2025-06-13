@@ -1,0 +1,133 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  lesson-service:
+    build:
+      context: ./lesson-service
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./lesson-service:/app
+      - /app/node_modules
+    env_file:
+      - ./lesson-service/.env
+    depends_on:
+      - rabbitmq
+
+  notification-service:
+    build:
+      context: ./notifications-service
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./notifications-service:/app
+      - /app/node_modules
+    env_file:
+      - ./notifications-service/.env
+    depends_on:
+      - rabbitmq
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
+    env_file:
+      - ./auth-service/.env
+
+  postgres-auth:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgre
+      POSTGRES_DB: postgres
+    volumes:
+      - pg_auth_data:/var/lib/postgresql/data
+
+  postgres-lesson:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgre
+      POSTGRES_DB: db_lessons
+    volumes:
+      - pg_lesson_data:/var/lib/postgresql/data
+
+  postgres-vocab:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgre
+      POSTGRES_DB: vocabulary_service
+    volumes:
+      - pg_vocab_data:/var/lib/postgresql/data
+
+  postgres-notifications:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgre
+      POSTGRES_DB: notifications_db
+    volumes:
+      - pg_notifications_data:/var/lib/postgresql/data
+
+  postgres-mindmap:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5437:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mindmap_db
+    volumes:
+      - pg_mindmap_data:/var/lib/postgresql/data
+  
+  backup:
+    build:
+      context: ./backup-container
+    env_file:
+      - ./backup-container/.env
+    volumes:
+      - ./backups:/backup
+    depends_on:
+      - postgres-auth
+      - postgres-lesson
+      - postgres-notifications
+      - postgres-vocab
+      - postgres-mindmap
+
+volumes:
+  pg_auth_data:
+  pg_lesson_data:
+  pg_notifications_data:
+  pg_vocab_data:
+  pg_mindmap_data:
