@@ -5,6 +5,7 @@ import { NotificationsService } from './notifications/notifications.service';
 import { NotificationsController } from './notifications/notifications.controller';
 import { NotificationsConsumer } from './notifications/notifications.consumer';
 import { RabbitMqModule } from './rabbitmq.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -19,7 +20,9 @@ import { RabbitMqModule } from './rabbitmq.module';
 			migrations: ['dist/migrations/*.js'],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Notification]), RabbitMqModule
+    TypeOrmModule.forFeature([Notification]), 
+    RabbitMqModule, 
+    HttpModule
   ],
 	controllers: [NotificationsController],
   providers: [NotificationsService, NotificationsConsumer],

@@ -22,4 +22,10 @@ export class NotificationsController {
 	updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
 		return this.service.updateStatus(id, body.status);
 	}
+
+	@Get('by-lesson/:lessonId')
+	async findByLessonId(@Param('lessonId') lessonId: string) {
+		this.logger.log(`[NotificationsController] Поиск уведомления по lessonId: ${lessonId}`);
+		return this.service.findByLessonId(lessonId);
+	}
 }
