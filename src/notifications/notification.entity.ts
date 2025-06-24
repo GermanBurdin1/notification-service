@@ -27,7 +27,7 @@ export class Notification {
   status: string;
 
   @Column({ default: false })
-  hidden_by_student: boolean;
+  hidden_by_user: boolean;
 
   @CreateDateColumn()
   created_at: Date;

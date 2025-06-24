@@ -41,8 +41,8 @@ export class NotificationsController {
 	}
 
 	@Patch(':id/hide')
-	async hideNotificationForStudent(@Param('id') id: string) {
-		this.logger.log(`[NotificationsController] Скрытие уведомления ${id} для студента`);
+	async hideNotificationForUser(@Param('id') id: string) {
+		this.logger.log(`[NotificationsController] Скрытие уведомления ${id} для пользователя`);
 		return this.service.hideNotificationForStudent(id);
 	}
 }
