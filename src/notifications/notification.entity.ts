@@ -26,6 +26,9 @@ export class Notification {
   @Column({ default: 'unread' })
   status: string;
 
+  @Column({ default: false })
+  hidden_by_student: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 }

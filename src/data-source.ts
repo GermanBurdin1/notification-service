@@ -3,7 +3,7 @@ import { Notification } from './notifications/notification.entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: 'postgres-notification', 
+  host: 'localhost', 
   port: 5432,
   username: 'postgres',
   password: 'postgre',

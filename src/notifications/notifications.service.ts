@@ -29,7 +29,10 @@ export class NotificationsService {
 
 	findByRecipient(recipient_id: string) {
 		return this.notificationRepo.find({
-			where: { recipient_id },
+			where: { 
+				recipient_id,
+				hidden_by_student: false  // показываем только не скрытые уведомления
+			},
 			order: { created_at: 'DESC' },
 		});
 	}
@@ -40,6 +43,10 @@ export class NotificationsService {
 
 	updateNotification(id: string, updateData: Partial<Notification>) {
 		return this.notificationRepo.update(id, updateData);
+	}
+
+	async hideNotificationForStudent(id: string) {
+		return this.notificationRepo.update(id, { hidden_by_student: true });
 	}
 
 	async findByLessonId(lessonId: string): Promise<Notification | undefined> {

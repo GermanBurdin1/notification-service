@@ -39,4 +39,10 @@ export class NotificationsController {
 		this.logger.log(`[NotificationsController] Исправление отсутствующих имен преподавателей`);
 		return this.service.fixMissingTeacherNames();
 	}
+
+	@Patch(':id/hide')
+	async hideNotificationForStudent(@Param('id') id: string) {
+		this.logger.log(`[NotificationsController] Скрытие уведомления ${id} для студента`);
+		return this.service.hideNotificationForStudent(id);
+	}
 }
