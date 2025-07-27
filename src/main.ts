@@ -11,9 +11,10 @@ async function bootstrap() {
     credentials: true,
   });
 
-  console.log('🐇 notification-service запущен без connectMicroservice');
+  console.log('[NotificationService] Service démarré sans connectMicroservice');
   await app.listen(process.env.PORT || 3003);
-  console.log('✅ notification-service is running');
-  console.log('🟢 HOT RELOAD TRIGGERED');
+  console.log('[NotificationService] Service en cours d\'exécution');
+  console.log('[NotificationService] Hot reload déclenché');
+  // TODO : ajouter un health check endpoint
 }
 bootstrap();

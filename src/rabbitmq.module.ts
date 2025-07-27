@@ -1,12 +1,12 @@
 import { Global, Module, Logger } from '@nestjs/common';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import * as dotenv from 'dotenv';
-dotenv.config(); // 👈 добавь это здесь
+dotenv.config(); // charge les variables d'environnement ici
 
 const logger = new Logger('RabbitMqModule');
 
 const RABBITMQ_URI = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}`;
-logger.log(`🐇 Подключение к RabbitMQ: ${RABBITMQ_URI}`);
+logger.log(`[RabbitMQ] Connexion à RabbitMQ: ${RABBITMQ_URI}`);
 
 @Global()
 @Module({

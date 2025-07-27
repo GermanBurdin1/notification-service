@@ -26,5 +26,6 @@ import { HttpModule } from '@nestjs/axios';
   ],
 	controllers: [NotificationsController],
   providers: [NotificationsService, NotificationsConsumer],
+  // TODO : exporter NotificationsService pour d'autres modules si besoin
 })
 export class AppModule {}

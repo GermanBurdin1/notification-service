@@ -13,4 +13,5 @@ export const AppDataSource = new DataSource({
   entities: [Notification],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],
+  // TODO : configurer les variables d'environnement pour la prod
 });

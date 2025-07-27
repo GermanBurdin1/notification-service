@@ -30,6 +30,7 @@ describe('NotificationsController', () => {
   let service: NotificationsService;
 
   beforeEach(async () => {
+    // mock complet du service notifications
     const module: TestingModule = await Test.createTestingModule({
       controllers: [NotificationsController],
       providers: [
@@ -57,7 +58,8 @@ describe('NotificationsController', () => {
   });
 
   describe('create', () => {
-    it('should create a notification', async () => {
+    it('should create une notification', async () => {
+      // TODO : tester avec des données invalides aussi
       const body = {
         recipient_id: 'user1',
         sender_id: 'teacher1',

@@ -16,9 +16,12 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
+    // test de base pour vérifier que l'app fonctionne
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
       .expect('Hello World!');
   });
+
+  // TODO : ajouter des tests e2e pour les endpoints de notifications
 });

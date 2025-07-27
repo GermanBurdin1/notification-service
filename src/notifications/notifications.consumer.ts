@@ -5,7 +5,7 @@ import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 @Injectable()
 export class NotificationsConsumer {
 	constructor(private readonly service: NotificationsService) {
-		console.log('📦 NotificationsConsumer создан');
+		console.log('[NotificationsConsumer] Consumer créé');
 	}
 
 	@RabbitSubscribe({
@@ -14,9 +14,9 @@ export class NotificationsConsumer {
 		queue: 'notifications',
 	})
 	async handleLessonCreated(data: any) {
-		console.log('🔥 handleLessonCreated вызван:', data);
-		console.log('🧪 this.service:', this.service);
-		console.log('🧪 typeof this.service.create:', typeof this.service?.create);
+		console.log('[NotificationsConsumer] handleLessonCreated appelé:', data);
+		console.log('[NotificationsConsumer] this.service:', this.service);
+		console.log('[NotificationsConsumer] typeof this.service.create:', typeof this.service?.create);
 		try {
 			const saved = await this.service.create({
 				recipient_id: data.user_id,
@@ -28,9 +28,9 @@ export class NotificationsConsumer {
 				status: data.status ?? 'unread',
 			});
 
-			console.log('✅ Уведомление сохранено в БД:', saved);
+			console.log('[NotificationsConsumer] Notification sauvegardée en BDD:', saved);
 		} catch (error) {
-			console.error('❌ Ошибка при сохранении уведомления:', error);
+			console.error('[NotificationsConsumer] Erreur lors de la sauvegarde notification:', error);
 		}
 	}
 
@@ -40,7 +40,8 @@ export class NotificationsConsumer {
 		queue: 'notifications',
 	})
 	async handleLessonResponse(data: any) {
-		console.log('📩 [notifications] Получен ответ по уроку:', data);
+		console.log('[NotificationsConsumer] Réponse de cours reçue:', data);
+		// TODO : valider les données avant sauvegarde
 		await this.service.create({
 			recipient_id: data.user_id,
 			sender_id: data.metadata?.teacherId ?? null,
@@ -51,6 +52,4 @@ export class NotificationsConsumer {
 			status: data.status,
 		});
 	}
-
-
 }

@@ -22,6 +22,7 @@ describe('NotificationsService', () => {
   } as Notification;
 
   beforeEach(async () => {
+    // setup du module avec mocks pour notifications
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NotificationsService,
@@ -56,7 +57,8 @@ describe('NotificationsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a notification', async () => {
+  it('should create une notification', async () => {
+    // TODO : peut-être tester avec différents types de notif
     repo.create.mockReturnValue(mockNotif);
     repo.save.mockResolvedValue(mockNotif);
 

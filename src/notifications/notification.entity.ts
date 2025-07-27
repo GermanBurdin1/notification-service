@@ -29,6 +29,7 @@ export class Notification {
   @Column({ default: false })
   hidden_by_user: boolean;
 
+  // TODO : ajouter un champ priority pour organiser les notifications par importance
   @CreateDateColumn()
   created_at: Date;
 }

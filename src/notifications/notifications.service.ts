@@ -14,15 +14,15 @@ export class NotificationsService {
 	) { }
 
 	async create(data: Partial<Notification>) {
-		console.log('📤 Попытка сохранить уведомление...');
+		console.log('[NotificationsService] Tentative de sauvegarde de notification...');
 		const notification = this.notificationRepo.create(data);
-		console.log('🛠️ Создан объект уведомления:', notification);
+		console.log('[NotificationsService] Objet notification créé:', notification);
 		try {
 			const saved = await this.notificationRepo.save(notification);
-			console.log('💾 Сохранено в БД:', saved);
+			console.log('[NotificationsService] Sauvegardé en BDD:', saved);
 			return saved;
 		} catch (err) {
-			console.error('❌ Ошибка при сохранении в БД:', err);
+			console.error('[NotificationsService] Erreur lors de la sauvegarde en BDD:', err);
 			throw err;
 		}
 	}
@@ -31,7 +31,7 @@ export class NotificationsService {
 		return this.notificationRepo.find({
 			where: { 
 				recipient_id,
-				hidden_by_user: false  // показываем только не скрытые уведомления
+				hidden_by_user: false  // on affiche seulement les notifications non masquées
 			},
 			order: { created_at: 'DESC' },
 		});
@@ -50,8 +50,8 @@ export class NotificationsService {
 	}
 
 	async findByLessonId(lessonId: string): Promise<Notification | undefined> {
-		console.log('[NotificationsService] Поиск уведомления по lessonId:', lessonId);
-		// Ищем уведомления типа booking_proposal (предложения от преподавателя)
+		console.log('[NotificationsService] Recherche notification par lessonId:', lessonId);
+		// on cherche les notifications de type booking_proposal (propositions du prof)
 		let notif = await this.notificationRepo.findOne({
 			where: {
 				type: 'booking_proposal',
@@ -59,7 +59,7 @@ export class NotificationsService {
 			}
 		});
 		
-		// Если не найдено booking_proposal, ищем booking_request
+		// si pas trouvé booking_proposal, on cherche booking_request
 		if (!notif) {
 			notif = await this.notificationRepo.findOne({
 				where: {
@@ -69,7 +69,7 @@ export class NotificationsService {
 			});
 		}
 		
-		console.log('[NotificationsService] Найдено уведомление:', notif);
+		console.log('[NotificationsService] Notification trouvée:', notif);
 		return notif;
 	}
 
@@ -90,44 +90,44 @@ export class NotificationsService {
 	}
 
 	async fixMissingTeacherNames(): Promise<any> {
-		console.log('[NotificationsService] Начинаем исправление отсутствующих имен преподавателей');
+		console.log('[NotificationsService] Début correction des noms de prof manquants');
 		
-		// Находим все уведомления типа booking_proposal без teacherName
+		// on trouve toutes les notifications de type booking_proposal sans teacherName
 		const notifications = await this.notificationRepo.find({
 			where: { type: 'booking_proposal' }
 		});
 
-		console.log(`[NotificationsService] Найдено ${notifications.length} уведомлений типа booking_proposal`);
+		console.log(`[NotificationsService] Trouvé ${notifications.length} notifications de type booking_proposal`);
 		
 		let updatedCount = 0;
 		
 		for (const notification of notifications) {
 			try {
-				// Проверяем, есть ли уже teacherName
+				// on vérifie s'il y a déjà un teacherName
 				if (notification.data?.teacherName) {
-					console.log(`[NotificationsService] Уведомление ${notification.id} уже содержит teacherName`);
+					console.log(`[NotificationsService] Notification ${notification.id} contient déjà teacherName`);
 					continue;
 				}
 
-				// Получаем lessonId
+				// on récupère le lessonId
 				const lessonId = notification.data?.lessonId;
 				if (!lessonId) {
-					console.log(`[NotificationsService] Уведомление ${notification.id} не содержит lessonId`);
+					console.log(`[NotificationsService] Notification ${notification.id} ne contient pas lessonId`);
 					continue;
 				}
 
-				// Получаем информацию об уроке
+				// on récupère les infos du cours
 				const lessonResp = await lastValueFrom(
 					this.httpService.get(`http://localhost:3004/lessons/${lessonId}`)
 				);
 				
 				const lesson = lessonResp.data;
 				if (!lesson || !lesson.teacherName) {
-					console.log(`[NotificationsService] Не удалось получить информацию о преподавателе для урока ${lessonId}`);
+					console.log(`[NotificationsService] Impossible de récupérer les infos prof pour cours ${lessonId}`);
 					continue;
 				}
 
-				// Обновляем data уведомления
+				// on met à jour les données de la notification
 				const updatedData = {
 					...notification.data,
 					teacherId: lesson.teacherId,
@@ -138,15 +138,16 @@ export class NotificationsService {
 					data: updatedData
 				});
 
-				console.log(`[NotificationsService] Обновлено уведомление ${notification.id} с teacherName: ${lesson.teacherName}`);
+				console.log(`[NotificationsService] Notification ${notification.id} mise à jour avec teacherName: ${lesson.teacherName}`);
 				updatedCount++;
 
 			} catch (error) {
-				console.error(`[NotificationsService] Ошибка при обновлении уведомления ${notification.id}:`, error);
+				console.error(`[NotificationsService] Erreur lors de la mise à jour notification ${notification.id}:`, error);
+				// TODO : implémenter un système de retry pour les erreurs temporaires
 			}
 		}
 
-		console.log(`[NotificationsService] Обновлено ${updatedCount} уведомлений`);
+		console.log(`[NotificationsService] ${updatedCount} notifications mises à jour`);
 		return { success: true, updatedCount };
 	}
 }
