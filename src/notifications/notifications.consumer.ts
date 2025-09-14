@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 
